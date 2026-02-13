@@ -1,0 +1,42 @@
+# fly.toml app configuration file generated for est-ce-dans-la-bible on 2026-02-14T00:26:58+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'est-ce-dans-la-bible'
+primary_region = 'cdg'
+console_command = 'php /var/www/html/artisan tinker'
+
+[build]
+  [build.args]
+    NODE_VERSION = '18'
+    PHP_VERSION = '8.4'
+
+[env]
+  APP_DEBUG = 'false'
+  APP_ENV = 'production'
+  APP_URL = 'https://est-ce-dans-la-bible.fly.dev'
+  ASSET_URL = 'https://est-ce-dans-la-bible.fly.dev'
+  CACHE_STORE = 'file'
+  DB_CONNECTION = 'sqlite'
+  DB_DATABASE = '/data/database.sqlite'
+  LOG_CHANNEL = 'stderr'
+  LOG_LEVEL = 'info'
+  LOG_STDERR_FORMATTER = 'Monolog\Formatter\JsonFormatter'
+  SESSION_DRIVER = 'cookie'
+  SESSION_SECURE_COOKIE = 'true'
+
+[[mounts]]
+  source = 'data'
+  destination = '/data'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '256mb'

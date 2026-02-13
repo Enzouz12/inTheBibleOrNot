@@ -1,0 +1,11 @@
+node_modules
+vendor
+public/build
+public/hot
+.env
+.env.backup
+storage/*.key
+.git
+tests
+.idea
+.vscode

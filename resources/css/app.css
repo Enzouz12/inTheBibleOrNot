@@ -10,7 +10,8 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-/* Gate container */
+/* ===== Gate container ===== */
+
 #gate-container {
     width: 100%;
     max-width: 500px;
@@ -20,14 +21,16 @@
 #gate-scene {
     position: relative;
     width: 100%;
-    height: 280px;
+    height: 320px;
     perspective: 1200px;
     overflow: hidden;
-    border-radius: 12px;
+    border-radius: 12px 12px 0 0;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: none;
 }
 
-/* Background behind the gates */
+/* ===== Backgrounds ===== */
+
 #gate-background {
     position: absolute;
     inset: 0;
@@ -41,19 +44,190 @@
 
 .bg-heaven {
     background:
-        radial-gradient(ellipse at top center, rgba(251, 191, 36, 0.4) 0%, transparent 60%),
-        radial-gradient(ellipse at top center, rgba(253, 224, 71, 0.2) 0%, transparent 40%),
-        linear-gradient(180deg, #422006 0%, #1c1917 60%, #0c0a09 100%);
+        radial-gradient(ellipse at 50% 0%, rgba(253, 224, 71, 0.6) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 20%, rgba(251, 191, 36, 0.3) 0%, transparent 55%),
+        linear-gradient(180deg, #854d0e 0%, #422006 30%, #292524 70%, #1c1917 100%);
 }
 
 .bg-hell {
     background:
-        radial-gradient(ellipse at bottom center, rgba(239, 68, 68, 0.5) 0%, transparent 60%),
-        radial-gradient(ellipse at bottom center, rgba(249, 115, 22, 0.3) 0%, transparent 40%),
-        linear-gradient(180deg, #0c0a09 0%, #1c1917 40%, #450a0a 100%);
+        radial-gradient(ellipse at 50% 100%, rgba(239, 68, 68, 0.6) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(249, 115, 22, 0.35) 0%, transparent 55%),
+        linear-gradient(180deg, #1c1917 0%, #292524 30%, #7f1d1d 75%, #991b1b 100%);
 }
 
-/* Gate panels */
+/* ===== Scene layers ===== */
+
+.scene-layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* ===== Heaven: rays ===== */
+
+.heaven-rays {
+    position: absolute;
+    top: -60%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(253, 224, 71, 0.07) 4deg,
+        transparent 8deg
+    );
+    animation: rayRotate 45s linear infinite;
+}
+
+@keyframes rayRotate {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== Heaven: clouds ===== */
+
+.cloud {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--w);
+    height: var(--h);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    box-shadow:
+        15px -8px 0 6px rgba(255, 255, 255, 0.15),
+        -12px -4px 0 8px rgba(255, 255, 255, 0.12),
+        25px -2px 0 4px rgba(255, 255, 255, 0.1);
+    filter: blur(1px);
+    animation: cloudFloat var(--dur, 7s) ease-in-out infinite alternate;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes cloudFloat {
+    from { transform: translateX(0); }
+    to { transform: translateX(18px); }
+}
+
+/* ===== Heaven: angel ===== */
+
+.heaven-angel {
+    position: absolute;
+    width: 110px;
+    height: 120px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: angelPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes angelPulse {
+    from { filter: drop-shadow(0 0 10px rgba(253, 224, 71, 0.3)); }
+    to { filter: drop-shadow(0 0 25px rgba(253, 224, 71, 0.6)); }
+}
+
+/* ===== Heaven: sparkles ===== */
+
+.sparkle {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 5px;
+    height: 5px;
+    background: #fef9c3;
+    border-radius: 50%;
+    box-shadow: 0 0 8px 3px rgba(253, 224, 71, 0.5);
+    animation: twinkle var(--dur, 2s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.6); }
+    50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* ===== Hell: flames ===== */
+
+.flame {
+    position: absolute;
+    bottom: -8%;
+    left: var(--x);
+    width: var(--w);
+    height: var(--h);
+    border-radius: 50% 50% 50% 50% / 60% 60% 35% 35%;
+    background: radial-gradient(
+        ellipse at 50% 80%,
+        rgba(255, 255, 220, 0.95) 0%,
+        rgba(255, 210, 0, 0.7) 15%,
+        rgba(255, 130, 0, 0.5) 40%,
+        rgba(220, 40, 0, 0.3) 65%,
+        transparent 100%
+    );
+    filter: blur(3px);
+    mix-blend-mode: screen;
+    animation: flicker var(--dur, 1.2s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes flicker {
+    0%   { transform: scaleY(0.9) scaleX(1) translateY(0) rotate(-1.5deg); opacity: 0.7; }
+    25%  { transform: scaleY(1.15) scaleX(0.85) translateY(-10px) rotate(1deg); opacity: 1; }
+    50%  { transform: scaleY(0.95) scaleX(1.08) translateY(-4px) rotate(-0.5deg); opacity: 0.8; }
+    75%  { transform: scaleY(1.1) scaleX(0.92) translateY(-8px) rotate(1.5deg); opacity: 0.95; }
+    100% { transform: scaleY(0.9) scaleX(1) translateY(0) rotate(-1.5deg); opacity: 0.7; }
+}
+
+/* ===== Hell: pitchfork ===== */
+
+.hell-pitchfork {
+    position: absolute;
+    width: 55px;
+    height: 110px;
+    bottom: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 0 6px rgba(168, 162, 158, 0.3));
+    opacity: 0.7;
+}
+
+/* ===== Hell: horns ===== */
+
+.hell-horns {
+    position: absolute;
+    width: 120px;
+    height: 48px;
+    top: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 0 8px rgba(153, 27, 27, 0.5));
+    opacity: 0.8;
+}
+
+/* ===== Hell: embers ===== */
+
+.ember {
+    position: absolute;
+    bottom: 15%;
+    left: var(--x);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fbbf24;
+    box-shadow: 0 0 6px 2px rgba(251, 191, 36, 0.6);
+    animation: rise var(--dur, 3s) ease-out infinite;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes rise {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-260px) translateX(var(--drift, 10px)) scale(0); opacity: 0; }
+}
+
+/* ===== Gate panels ===== */
+
 .gate-panel {
     position: absolute;
     top: 0;
@@ -65,11 +239,11 @@
         repeating-linear-gradient(
             90deg,
             transparent 0px,
-            transparent 18px,
-            #57534e 18px,
-            #57534e 22px,
-            transparent 22px,
-            transparent 40px
+            transparent 16px,
+            #57534e 16px,
+            #57534e 20px,
+            transparent 20px,
+            transparent 36px
         ),
         linear-gradient(180deg, #44403c 0%, #292524 50%, #1c1917 100%);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -88,7 +262,30 @@
     border-left: 2px solid #78716c;
 }
 
-/* Word coloring */
+/* ===== Stairway ===== */
+
+#stairway {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.stair {
+    height: 9px;
+    background: linear-gradient(180deg, #57534e 0%, #44403c 40%, #292524 100%);
+    border-top: 1px solid rgba(120, 113, 108, 0.35);
+}
+
+.stair:nth-child(1) { width: 100%; }
+.stair:nth-child(2) { width: 103%; }
+.stair:nth-child(3) { width: 106%; }
+.stair:nth-child(4) { width: 109%; }
+.stair:nth-child(5) { width: 112%; border-radius: 0 0 6px 6px; }
+
+/* ===== Word coloring ===== */
+
 .word-bible {
     color: #34d399;
     font-weight: 600;

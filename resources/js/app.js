@@ -11,6 +11,8 @@ const gateLeft = document.getElementById('gate-left');
 const gateRight = document.getElementById('gate-right');
 const gateBg = document.getElementById('gate-background');
 const gateLabel = document.getElementById('gate-label');
+const heavenScene = document.getElementById('heaven-scene');
+const hellScene = document.getElementById('hell-scene');
 
 input.addEventListener('input', () => {
     clearTimeout(debounceTimer);
@@ -63,8 +65,6 @@ function renderWords(rawWords) {
             span.className = wordCache[lower] ? 'word-bible' : 'word-not-bible';
         }
         display.appendChild(span);
-
-        // Add space between words
         display.appendChild(document.createTextNode(' '));
     }
 }
@@ -101,18 +101,25 @@ function updateGate(words) {
     gateLeft.style.transform = `rotateY(${angle}deg)`;
     gateRight.style.transform = `rotateY(-${angle}deg)`;
 
-    // Switch background
+    // Switch background + scene opacity
     gateBg.classList.remove('bg-neutral-gate', 'bg-heaven', 'bg-hell');
+
     if (ratio > 0.5) {
         gateBg.classList.add('bg-heaven');
+        heavenScene.style.opacity = deviation;
+        hellScene.style.opacity = 0;
         gateLabel.textContent = `${Math.round(ratio * 100)}% biblique — Les portes du Paradis s'ouvrent`;
         gateLabel.style.color = '#fbbf24';
     } else if (ratio < 0.5) {
         gateBg.classList.add('bg-hell');
+        hellScene.style.opacity = deviation;
+        heavenScene.style.opacity = 0;
         gateLabel.textContent = `${Math.round((1 - ratio) * 100)}% non-biblique — Les portes de l'Enfer s'ouvrent`;
         gateLabel.style.color = '#f87171';
     } else {
         gateBg.classList.add('bg-neutral-gate');
+        heavenScene.style.opacity = 0;
+        hellScene.style.opacity = 0;
         gateLabel.textContent = 'Équilibre parfait — Les portes hésitent...';
         gateLabel.style.color = '#a8a29e';
     }
@@ -123,6 +130,8 @@ function closeGate() {
     gateRight.style.transform = 'rotateY(0deg)';
     gateBg.classList.remove('bg-heaven', 'bg-hell');
     gateBg.classList.add('bg-neutral-gate');
+    heavenScene.style.opacity = 0;
+    hellScene.style.opacity = 0;
     gateLabel.textContent = 'Les portes attendent vos mots...';
     gateLabel.style.color = '#a8a29e';
 }
